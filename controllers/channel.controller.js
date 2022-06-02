@@ -37,5 +37,5 @@ module.exports = {
   list,
   getChannel,
   deleteChannel,
-  leave
+  leave,
 };
