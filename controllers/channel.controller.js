@@ -10,6 +10,17 @@ const create = catchAsync(async (req, res) => {
   res.status(httpStatus.CREATED).send(channel);
 });
 
+const deleteChannel = catchAsync(async (req, res) => {
+  const channel = await ChannelService.deleteChannel(req.user.id, req.params.channelId);
+  res.send(channel);
+});
+
+const leave = catchAsync(async (req, res) => {
+  const channel = await ChannelService.leaveChannel(req.user.id, req.params.channelId);
+  res.send(channel);
+});
+  
+
 const list = catchAsync(async (req, res) => {
   const options = _.pick(req.query, ['sortBy', 'limit', 'page']);
   const channels = await ChannelService.listChannels(req.user.id, options);
@@ -24,5 +35,7 @@ const getChannel = catchAsync(async (req, res) => {
 module.exports = {
   create,
   list,
-  getChannel
+  getChannel,
+  deleteChannel,
+  leave
 };

@@ -13,6 +13,9 @@ router
 
 router
   .route('/:channelId')
-  .get(auth(), channelController.getChannel);
+  .get(auth(), channelController.getChannel)
+  .delete(auth(), channelController.deleteChannel);
+
+router.route('/:channelId/leave').post(auth(), channelController.leave);  
 
 module.exports = router;
