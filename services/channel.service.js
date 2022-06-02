@@ -15,13 +15,20 @@ const createChannel = async (ownerId, name, members = []) => {
   });
 };
 
-const listChannels = async (userId) => {
-  const channelInfo = await ChannelModel.find({members: userId});
+const listChannels = async (userId, options) => {
+  const channelInfo = await ChannelModel.paginate({members: userId}, options);
   if (!channelInfo) throw new ApiError(httpStatus.NOT_FOUND, 'No channels');
   return channelInfo;
 };
 
+const getChannelsById = async (channelId) => {
+  const channel = await ChannelModel.findOne({id: channelId});
+  if (!channel) throw new ApiError(httpStatus.NOT_FOUND, 'Channel does not exist');
+  return channel;
+};
+
 module.exports = {
   createChannel,
-  listChannels
+  listChannels,
+  getChannelsById
 };

@@ -11,11 +11,18 @@ const create = catchAsync(async (req, res) => {
 });
 
 const list = catchAsync(async (req, res) => {
-  const channels = await ChannelService.listChannels(req.user.id);
+  const options = _.pick(req.query, ['sortBy', 'limit', 'page']);
+  const channels = await ChannelService.listChannels(req.user.id, options);
   res.send(channels);
+});
+
+const getChannel = catchAsync(async (req, res) => {
+  const channel = await ChannelService.getChannelsById(req.params.channelId);
+  res.send(channel);
 });
 
 module.exports = {
   create,
-  list
+  list,
+  getChannel
 };

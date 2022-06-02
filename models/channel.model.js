@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
-const { toJSON } = require('./plugins');
+const { toJSON, paginate } = require('./plugins');
 
-const tokenSchema = mongoose.Schema(
+const ChannelSchema = mongoose.Schema(
   {
     name: {
       type: String,
@@ -31,11 +31,12 @@ const tokenSchema = mongoose.Schema(
 );
 
 // add plugin that converts mongoose to json
-tokenSchema.plugin(toJSON);
+ChannelSchema.plugin(toJSON);
+ChannelSchema.plugin(paginate);
 
 /**
- * @typedef Token
+ * @typedef Channel
  */
-const Channel = mongoose.model('Channel', tokenSchema);
+const Channel = mongoose.model('Channel', ChannelSchema);
 
 module.exports = Channel;
