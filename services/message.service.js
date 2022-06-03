@@ -22,7 +22,7 @@ const createMessage = async (channelId, payload, ownerDetails) => {
  * @returns {Promise}
  */
 const getPreviousMessages = async (channelId, options) => {
-  const messages = await MessageModel.paginate({ channelId }, options);
+  const messages = await MessageModel.paginate({ channelId, status: 'active' }, options);
   return messages;
 };
 
