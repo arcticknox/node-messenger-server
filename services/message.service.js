@@ -10,10 +10,10 @@ const { ChannelModel, MessageModel } = require('../models');
  */
 const createMessage = async (channelId, payload, ownerDetails) => {
   const { id, name } = ownerDetails;
-  const channelInfo = await ChannelModel.findOne({_id: channelId, status: 'active'});
+  const channelInfo = await ChannelModel.findOne({ _id: channelId, status: 'active' });
   const recipients = _.get(channelInfo, 'members');
   const message = _.get(payload, 'message');
-  return MessageModel.create({channelId, message, recipients, ownerId: id, ownerName: name});
+  return MessageModel.create({ channelId, message, recipients, ownerId: id, ownerName: name });
 };
 
 /**
@@ -22,7 +22,7 @@ const createMessage = async (channelId, payload, ownerDetails) => {
  * @returns {Promise}
  */
 const getPreviousMessages = async (channelId, options) => {
-  const messages = await MessageModel.paginate({channelId}, options);
+  const messages = await MessageModel.paginate({ channelId }, options);
   return messages;
 };
 
@@ -33,7 +33,7 @@ const getPreviousMessages = async (channelId, options) => {
  * @returns {Promise}
  */
 const deleteMessage = async (channelId, messageId) => {
-  return MessageModel.update({_id: messageId, channelId}, { $set: { status: 'deleted' } });
+  return MessageModel.update({ _id: messageId, channelId }, { $set: { status: 'deleted' } });
 };
 
 module.exports = {

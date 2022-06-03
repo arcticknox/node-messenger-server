@@ -17,7 +17,7 @@ const createChannel = async (ownerId, name, members = []) => {
 
 const leaveChannel = async (userId, channelId) => {
   const channel = await ChannelModel
-    .findOneAndUpdate({_id: channelId, status: 'active'}, { $pull: { members: userId, admins: userId } });
+    .findOneAndUpdate({ _id: channelId, status: 'active' }, { $pull: { members: userId, admins: userId } });
   if (!channel) throw new ApiError(httpStatus.BAD_REQUEST, 'Channel does not exist');
   return channel;
 };
@@ -30,19 +30,19 @@ const leaveChannel = async (userId, channelId) => {
  */
 const deleteChannel = async (userId, channelId) => {
   const channel = await ChannelModel
-    .findOneAndUpdate({ _id: channelId, admins: userId }, {$set: { status: 'deleted' }}, { new: true });
+    .findOneAndUpdate({ _id: channelId, admins: userId }, { $set: { status: 'deleted' } }, { new: true });
   if (!channel) throw new ApiError(httpStatus.FORBIDDEN);
   return channel;
 };
 
 const listChannels = async (userId, options) => {
-  const channelInfo = await ChannelModel.paginate({members: userId, status: 'active'}, options);
+  const channelInfo = await ChannelModel.paginate({ members: userId, status: 'active' }, options);
   if (!channelInfo) throw new ApiError(httpStatus.NOT_FOUND, 'No channels');
   return channelInfo;
 };
 
 const getChannelsById = async (channelId) => {
-  const channel = await ChannelModel.findOne({_id: channelId, status: 'active'});
+  const channel = await ChannelModel.findOne({ _id: channelId, status: 'active' });
   if (!channel) throw new ApiError(httpStatus.NOT_FOUND, 'Channel does not exist');
   return channel;
 };
