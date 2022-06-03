@@ -2,8 +2,21 @@ const mongoose = require('mongoose');
 const app = require('./app');
 const config = require('./config/config');
 const logger = require('./config/logger');
+const http = require('http');
+const { Server } = require('socket.io');
+const { privateMessage } = require('./services/socket.service');
 
-let server;
+// Creating a http server
+const server = http.createServer(app);
+
+// Initializing Socket.io
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ["GET", "POST"]
+  }
+});
+
 const initMongoDB = () => {
   mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
     logger.info('Connected to MongoDB');
@@ -12,7 +25,8 @@ const initMongoDB = () => {
   });
 };
 
-server = app.listen(config.port, () => {
+// Changed server config to make it work with socket.io
+server.listen(config.port, () => {
   initMongoDB();
   logger.info(`App server listening on port ${config.port}`);
 });
@@ -41,4 +55,14 @@ process.on('SIGTERM', () => {
   if (server) {
     server.close();
   }
+});
+
+// Get users for private messages
+
+// Establish socket connection
+io.on('connection', (socket) => {
+  logger.info(`${socket.id} has connected!`)
+  // socket.emit('assign socket id', socket.id, socket.id);
+
+  socket.on('private message', msg => privateMessage(msg, socket));
 });
