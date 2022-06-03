@@ -1,11 +1,6 @@
 const logger = require('../config/logger');
 
-module.exports.privateMessage = async (msg, socket) => {
-    logger.info(msg)
-    const { message, channelId, socketId } = JSON.parse(msg);
-    // io.emit('private message', JSON.stringify({
-    //     message,
-    //     channelId
-    // }));
-    // socket.to()
+module.exports.sendMessage = async (msg, io) => {
+    const { message, to, from } = JSON.parse(msg);
+    [to, from].forEach(e => io.emit(e, JSON.stringify({ message, from })));
 };

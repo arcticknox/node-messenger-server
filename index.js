@@ -4,7 +4,7 @@ const config = require('./config/config');
 const logger = require('./config/logger');
 const http = require('http');
 const { Server } = require('socket.io');
-const { privateMessage } = require('./services/socket.service');
+const { socketIO } = require('./middlewares/socket');
 
 // Creating a http server
 const server = http.createServer(app);
@@ -28,6 +28,7 @@ const initMongoDB = () => {
 // Changed server config to make it work with socket.io
 server.listen(config.port, () => {
   initMongoDB();
+  socketIO(io);
   logger.info(`App server listening on port ${config.port}`);
 });
 
@@ -55,14 +56,4 @@ process.on('SIGTERM', () => {
   if (server) {
     server.close();
   }
-});
-
-// Get users for private messages
-
-// Establish socket connection
-io.on('connection', (socket) => {
-  logger.info(`${socket.id} has connected!`)
-  // socket.emit('assign socket id', socket.id, socket.id);
-
-  socket.on('private message', msg => privateMessage(msg, socket));
 });
