@@ -1,6 +1,8 @@
 const express = require('express');
 const authRoute = require('./auth.route');
 const userRoute = require('./user.route');
+const channelRoute = require('./channel.route');
+const messageRoute = require('./message.route');
 const config = require('../../config/config');
 
 const router = express.Router();
@@ -14,6 +16,14 @@ const defaultRoutes = [
     path: '/users',
     route: userRoute,
   },
+  {
+    path: '/channel',
+    route: channelRoute,
+  },
+  {
+    path: '/message',
+    route: messageRoute,
+  }
 ];
 
 const devRoutes = [
