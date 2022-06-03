@@ -22,6 +22,7 @@ const leaveChannel = async (userId, channelId) => {
   return channel;
 };
 
+
 /**
  * Delete channel, admin rights required
  * @param {string} userId 
@@ -47,10 +48,27 @@ const getChannelsById = async (channelId) => {
   return channel;
 };
 
+/**
+ * Update channel, admin rights required
+ * @param {string} channelId 
+ * @param {object} update 
+ * @returns {Promise}
+ */
+const updateChannel = async (channelId, userId, update) => {
+  const { members = [], admins = [], name } = update;
+  members.push(userId); admins.push(userId);
+  const channel = await ChannelModel
+    .findOneAndUpdate({ channelId, admins: userId, status: 'active' }, 
+      { $set: { name, members: _.uniq(members), admins: _.uniq(admins) } }, { new: true });
+  if (!channel) throw new ApiError(httpStatus.UNAUTHORIZED, 'No rights, or channel does not exist');
+  return channel;
+};
+
 module.exports = {
   createChannel,
   listChannels,
   getChannelsById,
   deleteChannel,
-  leaveChannel
+  leaveChannel,
+  updateChannel
 };

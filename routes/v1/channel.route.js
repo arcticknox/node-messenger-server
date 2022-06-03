@@ -14,7 +14,9 @@ router
 router
   .route('/:channelId')
   .get(auth(), channelController.getChannel)
-  .delete(auth(), channelController.deleteChannel);
+  .delete(auth(), channelController.deleteChannel)
+  .patch(auth(), channelController.updateChannel);
+
 
 router.route('/:channelId/leave').post(auth(), channelController.leave);  
 

@@ -19,7 +19,6 @@ const leave = catchAsync(async (req, res) => {
   const channel = await ChannelService.leaveChannel(req.user.id, req.params.channelId);
   res.send(channel);
 });
-  
 
 const list = catchAsync(async (req, res) => {
   const options = _.pick(req.query, ['sortBy', 'limit', 'page']);
@@ -32,10 +31,18 @@ const getChannel = catchAsync(async (req, res) => {
   res.send(channel);
 });
 
+const updateChannel = catchAsync(async (req, res) => {
+  const allowedUpdates = ['members', 'admins', 'name'];
+  const update = _.pick(req.body, allowedUpdates);
+  const channel = await ChannelService.updateChannel(req.params.channelId, req.user.id,update);
+  res.send(channel);
+});
+
 module.exports = {
   create,
   list,
   getChannel,
   deleteChannel,
   leave,
+  updateChannel
 };
