@@ -14,6 +14,8 @@ module.exports = {
     'semi': ['error', 'always'],
     'indent': ['error', 2],
     'no-multi-spaces': ['error'],
-    'object-curly-spacing': ['error', 'always']
+    'object-curly-spacing': ['error', 'always'],
+    'linebreak-style': [0, 'error', 'unix'],
+    'no-multiple-empty-lines': ['error']
   }
 };
