@@ -3,13 +3,13 @@ const { sendMessage } = require('../services/socket.service');
 
 module.exports.socketIO = async (io) => {
   // Load all channels
-  const channels = await Promise.resolve(listAllChannels());
+  const channels = await listAllChannels();
 
   io.on('connection', (socket) => {
     console.log(`${socket.id} has connected!`);
 
     for (const channel of channels) {
-      socket.on(channel.id, msg => sendMessage(channel, msg, io));
+      socket.on(channel.id, payload => sendMessage(channel, payload, io));
     }
   });
 };
