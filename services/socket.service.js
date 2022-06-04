@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const { createMessage } = require('./message.service');
-const { verifyToken } = require("./token.service");
+const { verifyToken } = require('./token.service');
 
 module.exports.sendMessage = async (channel, payload, io) => {
   if (channel && channel.status === 'active') {
@@ -16,6 +16,6 @@ module.exports.sendMessage = async (channel, payload, io) => {
       console.error(`Token of ${user.id} has expired.`);
     }
   } else {
-    console.error(`Channel doesn't exist or might be inactive.`);
+    console.error('Channel doesn\'t exist or might be inactive.');
   }
 };
