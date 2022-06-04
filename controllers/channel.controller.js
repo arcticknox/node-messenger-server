@@ -2,9 +2,11 @@ const _ = require('lodash');
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const { ChannelService } = require('../services');
+const ApiError = require('../utils/ApiError');
 
 const create = catchAsync(async (req, res) => {
   const { name, members } = req.body;
+  if (name === 'Lobby') throw new ApiError(httpStatus.FORBIDDEN, 'Channel name now allowed');
   const ownerId = _.get(req, 'user.id');
   const channel = await ChannelService.createChannel(ownerId, name, members);
   res.status(httpStatus.CREATED).send(channel);
