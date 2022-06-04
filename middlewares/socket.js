@@ -3,14 +3,14 @@ const { sendMessage } = require('../services/socket.service');
 const { queryAllUsers } = require('../services/user.service');
 
 module.exports.socketIO = async (io) => {
-    // Load all users and channels
-    const entities = [...await Promise.resolve(queryAllUsers()), ...await Promise.resolve(listAllChannels())];
+    // Load all channels
+    const channels = await Promise.resolve(listAllChannels());
 
     io.on('connection', (socket) => {
         console.log(`${socket.id} has connected!`);
 
-        for (const entity of entities) {
-            socket.on(entity.name, msg => sendMessage(entity, msg, io));
+        for (const channel of channels) {
+            socket.on(channel.id, msg => sendMessage(channel, msg, io));
         }
     });
 }
