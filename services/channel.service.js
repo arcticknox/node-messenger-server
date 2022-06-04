@@ -15,7 +15,7 @@ const createChannel = async (ownerId, name, members = []) => {
   members.push(ownerId); // Ensure owner is in members
   if (channelInfo) throw new ApiError(httpStatus.BAD_REQUEST, 'Channel already exists');
   return ChannelModel.create({
-    name, 
+    name,
     ownerId,
     members: _.uniq(members),
     admins: [ownerId],
@@ -82,11 +82,17 @@ const updateChannel = async (channelId, userId, update) => {
   const { members = [], admins = [], name } = update;
   members.push(userId); admins.push(userId);
   const channel = await ChannelModel
-    .findOneAndUpdate({ channelId, admins: userId, status: 'active' }, 
+    .findOneAndUpdate({ channelId, admins: userId, status: 'active' },
       { $set: { name, members: _.uniq(members), admins: _.uniq(admins) } }, { new: true });
   if (!channel) throw new ApiError(httpStatus.UNAUTHORIZED, 'No rights, or channel does not exist');
   return channel;
 };
+
+/**
+ * List all created channels.
+ * @returns {Promise}
+ */
+const listAllChannels = async () => await ChannelModel.find();
 
 module.exports = {
   createChannel,
@@ -94,5 +100,6 @@ module.exports = {
   getChannelsById,
   deleteChannel,
   leaveChannel,
-  updateChannel
+  updateChannel,
+  listAllChannels
 };
