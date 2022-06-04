@@ -1,14 +1,16 @@
-const _ = require('lodash');
+const { listAllChannels } = require('../services/channel.service');
 const { sendMessage } = require('../services/socket.service');
+const { queryAllUsers } = require('../services/user.service');
 
-const users = ['Kunal', 'Kaushik'];
+module.exports.socketIO = async (io) => {
+    // Load all users and channels
+    const entities = [...await Promise.resolve(queryAllUsers()), ...await Promise.resolve(listAllChannels())];
 
-module.exports.socketIO = io => {
     io.on('connection', (socket) => {
-        console.log(`${socket.id} has connected!`)
+        console.log(`${socket.id} has connected!`);
 
-        for (const user of users) {
-            socket.on(user, msg => sendMessage(msg, io))
+        for (const entity of entities) {
+            socket.on(entity.name, msg => sendMessage(entity, msg, io));
         }
     });
 }

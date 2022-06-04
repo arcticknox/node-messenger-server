@@ -79,6 +79,14 @@ const deleteUserById = async (userId) => {
   return user;
 };
 
+/**
+ * Get all user documents
+ * @kuckchuck96
+ * @async
+ * @returns {Promise<QueryResult>}
+ */
+const queryAllUsers = async () => await UserModel.find();
+
 module.exports = {
   createUser,
   queryUsers,
@@ -86,4 +94,5 @@ module.exports = {
   getUserByEmail,
   updateUserById,
   deleteUserById,
+  queryAllUsers
 };
