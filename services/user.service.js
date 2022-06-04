@@ -1,6 +1,17 @@
 const httpStatus = require('http-status');
-const { UserModel } = require('../models');
+const { UserModel, ChannelModel } = require('../models');
 const ApiError = require('../utils/ApiError');
+
+/**
+ * Add to default lobby
+ * @param {string} user 
+ */
+const addUserToDefaultLobby = async (user) => {
+  await ChannelModel
+    .findOneAndUpdate({ name: 'Lobby' }, 
+      { $push: { members: user._id } }, { upsert: true, new: true });
+
+};
 
 /**
  * Create a user
@@ -11,7 +22,10 @@ const createUser = async (userBody) => {
   if (await UserModel.isEmailTaken(userBody.email)) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
   }
-  return UserModel.create(userBody);
+  const user = await UserModel.create(userBody);
+  // Add new user to default channel
+  await addUserToDefaultLobby(user); 
+  return user;
 };
 
 /**
