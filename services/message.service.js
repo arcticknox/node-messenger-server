@@ -1,5 +1,7 @@
+const httpStatus = require('http-status');
 const _ = require('lodash');
 const { ChannelModel, MessageModel } = require('../models');
+const ApiError = require('../utils/ApiError');
 
 /**
  * Create message
@@ -21,7 +23,9 @@ const createMessage = async (channelId, payload, ownerDetails) => {
  * @param {string} channelId 
  * @returns {Promise}
  */
-const getPreviousMessages = async (channelId, options) => {
+const getPreviousMessages = async (userId, channelId, options) => {
+  const channelInfo = await ChannelModel.findOne({ _id: channelId, members: userId });
+  if (!channelInfo) throw new ApiError(httpStatus.FORBIDDEN, 'User is not a member of this channel');
   const messages = await MessageModel.paginate({ channelId, status: 'active' }, options);
   return messages;
 };

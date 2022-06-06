@@ -10,7 +10,7 @@ const createMessage = catchAsync(async (req, res) => {
   
 const getMessages = catchAsync(async (req, res) => {
   const options = _.pick(req.query, ['sortBy', 'limit', 'page']);
-  const messages = await MessageService.getPreviousMessages(req.params.channelId, options);
+  const messages = await MessageService.getPreviousMessages(req.user.id,req.params.channelId, options);
   res.send(messages);
 });
 
