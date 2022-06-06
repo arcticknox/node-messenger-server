@@ -26,7 +26,9 @@ const createMessage = async (channelId, payload, ownerDetails) => {
 const getPreviousMessages = async (userId, channelId, options) => {
   const channelInfo = await ChannelModel.findOne({ _id: channelId, members: userId });
   if (!channelInfo) throw new ApiError(httpStatus.FORBIDDEN, 'User is not a member of this channel');
+  options.sortBy = 'createdAt:desc';
   const messages = await MessageModel.paginate({ channelId, status: 'active' }, options);
+  messages.results = _.reverse(messages.results);
   return messages;
 };
 

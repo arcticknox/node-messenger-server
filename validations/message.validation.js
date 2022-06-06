@@ -15,7 +15,6 @@ const getMessages = {
     channelId: Joi.string().custom(objectId).required(),
   }),
   query: Joi.object().keys({
-    sortBy: Joi.string(),
     limit: Joi.number().integer(),
     page: Joi.number().integer(),
   }),
