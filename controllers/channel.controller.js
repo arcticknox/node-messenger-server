@@ -36,7 +36,7 @@ const getChannel = catchAsync(async (req, res) => {
 const updateChannel = catchAsync(async (req, res) => {
   const allowedUpdates = ['members', 'admins', 'name'];
   const update = _.pick(req.body, allowedUpdates);
-  const channel = await ChannelService.updateChannel(req.params.channelId, req.user.id,update);
+  const channel = await ChannelService.updateChannel(req.params.channelId, req.user.id, update);
   res.send(channel);
 });
 

@@ -16,6 +16,7 @@ module.exports = {
     'no-multi-spaces': ['error'],
     'object-curly-spacing': ['error', 'always'],
     'linebreak-style': [0, 'error', 'unix'],
-    'no-multiple-empty-lines': ['error']
+    'no-multiple-empty-lines': ['error'],
+    'comma-spacing': ['error']
   }
 };
