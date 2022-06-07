@@ -39,7 +39,7 @@ const getPreviousMessages = async (userId, channelId, options) => {
  * @returns {Promise}
  */
 const deleteMessage = async (channelId, messageId) => {
-  return MessageModel.update({ _id: messageId, channelId }, { $set: { status: 'deleted' } });
+  return MessageModel.updateOne({ _id: messageId, channelId }, { $set: { status: 'deleted' } });
 };
 
 module.exports = {

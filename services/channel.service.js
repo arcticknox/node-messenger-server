@@ -11,7 +11,7 @@ const httpStatus = require('http-status');
  * @returns {Promise}
  */
 const createChannel = async (ownerId, name, members = []) => {
-  const channelInfo = await ChannelModel.findOne({ name, ownerId });
+  const channelInfo = await ChannelModel.findOne({ name, ownerId, status: 'active' });
   members.push(ownerId); // Ensure owner is in members
   if (channelInfo) throw new ApiError(httpStatus.BAD_REQUEST, 'Channel already exists');
   return ChannelModel.create({
