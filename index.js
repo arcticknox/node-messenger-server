@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const _ = require('lodash');
 const app = require('./app');
 const config = require('./config/config');
 const logger = require('./config/logger');
@@ -12,7 +13,7 @@ const server = http.createServer(app);
 // Initializing Socket.io
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: _.get(config, 'corsWhitelist', '*'),
     methods: ['GET', 'POST']
   }
 });

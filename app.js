@@ -21,6 +21,17 @@ if (config.env !== 'test') {
   app.use(morgan.errorHandler);
 }
 
+if (config.cors) {
+  const setCorsOptions = (req, callback) => {
+    let corsOptions;
+    if (config.corsWhitelist.indexOf(req.header('Origin')) !== -1) {
+      corsOptions = { origin: true };
+    } else corsOptions = { origin: false };
+    callback(null, corsOptions);
+  };
+  app.use(cors(setCorsOptions));
+}
+
 // set security HTTP headers
 app.use(helmet());
 
@@ -37,9 +48,6 @@ app.use(mongoSanitize());
 // gzip compression
 app.use(compression());
 
-// enable cors
-app.use(cors());
-app.options('*', cors());
 
 // jwt authentication
 app.use(passport.initialize());
