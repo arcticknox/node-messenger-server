@@ -24,7 +24,7 @@ const envVarsSchema = Joi.object()
     SMTP_PASSWORD: Joi.string().description('password for email server'),
     EMAIL_FROM: Joi.string().description('the from field in the emails sent by the app'),
     CORS: Joi.boolean().default(false),
-    CORS_WHITELIST: Joi.array().default([])
+    CORS_WHITELIST: Joi.string(),
 
   })
   .unknown();
@@ -65,5 +65,5 @@ module.exports = {
     from: envVars.EMAIL_FROM,
   },
   cors: envVars.CORS,
-  corsWhitelist: envVars.CORS_WHITELIST
+  corsWhitelist: JSON.parse(envVars.CORS_WHITELIST)
 };
