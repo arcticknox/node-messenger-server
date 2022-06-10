@@ -4,7 +4,7 @@ const { sendMessage } = require('../services/socket.service');
 module.exports.socketIO = async (io) => {
   // Load all channels
   
-  io.on('connection', (socket) => {
+  io.on('connection', async (socket) => {
     // Reload list of channels
     const channels = await listAllChannels();
     
