@@ -23,8 +23,10 @@ const envVarsSchema = Joi.object()
     SMTP_USERNAME: Joi.string().description('username for email server'),
     SMTP_PASSWORD: Joi.string().description('password for email server'),
     EMAIL_FROM: Joi.string().description('the from field in the emails sent by the app'),
+    VERIFY_DOMAIN: Joi.string(),
     CORS: Joi.boolean().default(false),
     CORS_WHITELIST: Joi.string(),
+    BYPASS_VERIFY_EMAIL: Joi.boolean().default(false)
 
   })
   .unknown();
@@ -62,8 +64,10 @@ module.exports = {
         pass: envVars.SMTP_PASSWORD,
       },
     },
+    verifyDomain: envVars.VERIFY_DOMAIN,
     from: envVars.EMAIL_FROM,
   },
   cors: envVars.CORS,
-  corsWhitelist: JSON.parse(envVars.CORS_WHITELIST)
+  corsWhitelist: JSON.parse(envVars.CORS_WHITELIST),
+  bypassVerifyEmail: envVars.BYPASS_VERIFY_EMAIL,
 };
