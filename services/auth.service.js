@@ -1,9 +1,10 @@
 const httpStatus = require('http-status');
 const TokenService = require('./token.service');
 const UserService = require('./user.service');
-const { TokenModel } = require('../models');
+const { TokenModel, UserModel } = require('../models');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
+const config = require('../config/config');
 
 /**
  * Login with username and password
@@ -12,9 +13,12 @@ const { tokenTypes } = require('../config/tokens');
  * @returns {Promise<User>}
  */
 const loginUserWithEmailAndPassword = async (email, password) => {
-  const user = await UserService.getUserByEmail(email);
+  let user;
+  if (config.bypassVerifyEmail) {
+    user = await UserService.getUserByEmail(email);
+  } else user = await UserModel.findOne({ email, isEmailVerified: true });
   if (!user || !(await user.isPasswordMatch(password))) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password');
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Incorrect email or password or email not verified');
   }
   return user;
 };
