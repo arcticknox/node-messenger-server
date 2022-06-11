@@ -1,17 +1,13 @@
-const { listAllChannels } = require('../services/channel.service');
 const { sendMessage } = require('../services/socket.service');
+const logger = require('../config/logger');
 
 module.exports.socketIO = async (io) => {
-  // Load all channels
-  
+  let connections = 0;
   io.on('connection', async (socket) => {
     // Reload list of channels
-    const channels = await listAllChannels();
-    
-    console.log(`${socket.id} has connected!`);
-
-    for (const channel of channels) {
-      socket.on(channel.id, payload => sendMessage(channel, payload, io));
-    }
+    connections +=1;
+    logger.info(`${socket.id} has connected! Connections: ${connections}`);
+    // sendMessage event
+    socket.on('sendMessage', payload => sendMessage(payload, io));
   });
 };
