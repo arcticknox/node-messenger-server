@@ -1,4 +1,5 @@
 const catchAsync = require('../utils/catchAsync');
+const path = require('path');
 const responseHandler = require('../utils/responseHandler');
 const { AuthService, UserService, TokenService, EmailService } = require('../services');
 
@@ -49,7 +50,8 @@ const sendVerificationEmail = catchAsync(async (req, res) => {
 
 const verifyEmail = catchAsync(async (req, res) => {
   await AuthService.verifyEmail(req.query.token);
-  responseHandler(req, res);
+  // TODO: Need to handle this better from client
+  res.sendFile(path.resolve('public/emailVerified.html'));
 });
 
 module.exports = {
