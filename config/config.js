@@ -25,7 +25,7 @@ const envVarsSchema = Joi.object()
     EMAIL_FROM: Joi.string().description('the from field in the emails sent by the app'),
     VERIFY_DOMAIN: Joi.string(),
     CORS: Joi.boolean().default(false),
-    CORS_WHITELIST: Joi.string(),
+    CORS_WHITELIST: Joi.string().default('[]'),
     BYPASS_VERIFY_EMAIL: Joi.boolean().default(false)
 
   })
