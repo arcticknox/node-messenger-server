@@ -1,11 +1,14 @@
 const _ = require('lodash');
 const { createMessage } = require('./message.service');
 const { verifyToken } = require('./token.service');
+const { ChannelModel } = require('../models');
+const logger = require('../config/logger');
 
-module.exports.sendMessage = async (channel, payload, io) => {
-  if (channel && channel.status === 'active') {
-    const { message, channelId, user, tokens } = JSON.parse(payload);
-    const tokenDoc = await Promise.resolve(verifyToken(_.get(tokens, 'refresh.token'), 'refresh'));
+module.exports.sendMessage = async (payload, io) => {
+  const { message, channelId, user, tokens } = JSON.parse(payload);
+  const channel = await ChannelModel.findOne({ _id: channelId, status: 'active' });
+  if (channel) {
+    const tokenDoc = await verifyToken(_.get(tokens, 'refresh.token'), 'refresh');
     if (tokenDoc) {
       const { members, id } = channel;
 
@@ -13,9 +16,9 @@ module.exports.sendMessage = async (channel, payload, io) => {
         io.emit(id, JSON.stringify(await createMessage(channelId, { message }, user)));
       }
     } else {
-      console.error(`Token of ${user.id} has expired.`);
+      logger.error(`Token of ${user.id} has expired.`);
     }
   } else {
-    console.error('Channel doesn\'t exist or might be inactive.');
+    logger.error('Channel doesn\'t exist or might be inactive.');
   }
 };
