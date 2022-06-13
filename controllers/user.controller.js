@@ -35,10 +35,16 @@ const deleteUser = catchAsync(async (req, res) => {
   responseHandler(req, res);
 });
 
+const getUsersByIds = catchAsync(async (req, res) => {
+  const users = await UserService.getUsersByIds(req.body.members);
+  responseHandler(req, res, users);
+});
+
 module.exports = {
   createUser,
   getUsers,
   getUser,
   updateUser,
   deleteUser,
+  getUsersByIds,
 };
