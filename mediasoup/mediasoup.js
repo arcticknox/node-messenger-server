@@ -1,5 +1,7 @@
 const config = require('../config/mediasoup');
 const mediasoup = require('mediasoup');
+const webRtcTransportListenIps = config.mediasoup.webRtcTransport.listenIps;
+console.log('WebRTC Transport config: ', webRtcTransportListenIps);
 
 
 const removeItems = (items, socket, type) => {
@@ -18,7 +20,7 @@ const createWorker = async () => {
     rtcMinPort: config.mediasoup.worker.rtcMinPort,
     rtcMaxPort: config.mediasoup.worker.rtcMaxPort,
   });
-  console.log(`worker pid ${worker.pid}`);
+  console.log(`Worker started: ${worker.pid}`);
 
   worker.on('died', error => {
     // This implies something serious happened, so kill the application
@@ -57,7 +59,7 @@ const createWebRtcTransport = async (router) => {
     try {
       // https://mediasoup.org/documentation/v3/mediasoup/api/#WebRtcTransportOptions
       const webRtcTransport_options = {
-        listenIps: config.mediasoup.webRtcTransport.listenIps,
+        listenIps: webRtcTransportListenIps,
         enableUdp: true,
         enableTcp: true,
         preferUdp: true,
