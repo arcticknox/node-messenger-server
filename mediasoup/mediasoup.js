@@ -15,8 +15,8 @@ const removeItems = (items, socket, type) => {
 
 const createWorker = async () => {
   const worker = await mediasoup.createWorker({
-    rtcMinPort: config.mediasoup.rtcMinPort,
-    rtcMaxPort: config.mediasoup.rtcMaxPort,
+    rtcMinPort: config.mediasoup.worker.rtcMinPort,
+    rtcMaxPort: config.mediasoup.worker.rtcMaxPort,
   });
   console.log(`worker pid ${worker.pid}`);
 
