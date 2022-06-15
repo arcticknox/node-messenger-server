@@ -62,7 +62,7 @@ if (config.env === 'production') {
 // v1 api routes
 app.use('/v1', routes);
 if (config.env !== 'production') {
-  app.use('/sfu/:room', express.static(path.join(__dirname, 'public')));
+  app.use('/v2/sfu/:room', express.static(path.join(__dirname, 'public')));
 }
 
 // send back a 404 error for any unknown api request
