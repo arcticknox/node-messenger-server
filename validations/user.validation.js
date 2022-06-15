@@ -45,10 +45,17 @@ const deleteUser = {
   }),
 };
 
+const usersByIds = {
+  body: Joi.object().keys({
+    members: Joi.array(),
+  }),
+}
+
 module.exports = {
   createUser,
   getUsers,
   getUser,
   updateUser,
   deleteUser,
+  usersByIds,
 };

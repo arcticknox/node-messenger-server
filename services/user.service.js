@@ -8,7 +8,7 @@ const ApiError = require('../utils/ApiError');
  */
 const addUserToDefaultLobby = async (user) => {
   await ChannelModel
-    .findOneAndUpdate({ name: 'Lobby' }, 
+    .findOneAndUpdate({ name: 'Lobby' },
       { $push: { members: user._id } }, { upsert: true, new: true });
 
 };
@@ -24,7 +24,7 @@ const createUser = async (userBody) => {
   }
   const user = await UserModel.create(userBody);
   // Add new user to default channel
-  await addUserToDefaultLobby(user); 
+  await addUserToDefaultLobby(user);
   return user;
 };
 
@@ -101,6 +101,23 @@ const deleteUserById = async (userId) => {
  */
 const queryAllUsers = async () => await UserModel.find();
 
+/**
+ * Get user detail by ids.
+ * @param {string} ids 
+ * @returns {Promise<QueryResult>}
+ */
+const getUsersByIds = async (members) => {
+  const users = await UserModel.find({
+    _id: {
+      $in: members
+    }
+  });
+  if (!users) {
+    return null;
+  }
+  return users;
+};
+
 module.exports = {
   createUser,
   queryUsers,
@@ -108,5 +125,6 @@ module.exports = {
   getUserByEmail,
   updateUserById,
   deleteUserById,
-  queryAllUsers
+  queryAllUsers,
+  getUsersByIds
 };
