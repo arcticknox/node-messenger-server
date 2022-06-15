@@ -6,6 +6,7 @@ const logger = require('./config/logger');
 const http = require('http');
 const { Server } = require('socket.io');
 const { socketIO } = require('./middlewares/socket');
+const { connectMediasoup } = require('./mediasoup');
 
 // Creating a http server
 const server = http.createServer(app);
@@ -30,6 +31,7 @@ const initMongoDB = () => {
 server.listen(config.port, () => {
   initMongoDB();
   socketIO(io);
+  connectMediasoup(io);
   logger.info(`App server listening on port ${config.port}`);
 });
 
