@@ -5,7 +5,7 @@ const mediasoupClient = require('mediasoup-client');
 
 const roomName = window.location.pathname.split('/')[2];
 
-const socket = io('/mediasoup');
+const socket = io('/mediasoup', { path: '/api/socket.io' });
 
 socket.on('connection-success', ({ socketId }) => {
   console.log(socketId);
