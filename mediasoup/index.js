@@ -35,13 +35,17 @@ module.exports.connectMediasoup = async (io) => {
       socketId: socket.id,
     });
 
-    socket.on('disconnect', () => {
-    // do some cleanup
+    const exitRoomAndCleanup = () => {
+      if (!peers[socket.id]) {
+        console.log('peer already disconnected');
+        return;
+      }
       console.log('peer disconnected');
+      // Cleanup
       consumers = removeItems(consumers, socket, 'consumer');
       producers = removeItems(producers, socket, 'producer');
       transports = removeItems(transports, socket, 'transport');
-
+     
       const { roomName } = peers[socket.id];
       delete peers[socket.id];
 
@@ -50,6 +54,14 @@ module.exports.connectMediasoup = async (io) => {
         router: rooms[roomName].router,
         peers: rooms[roomName].peers.filter(socketId => socketId !== socket.id)
       };
+    };
+
+    socket.on('disconnect', () => {
+      exitRoomAndCleanup();
+    });
+
+    socket.on('exitRoom', () => {
+      exitRoomAndCleanup();
     });
 
     /**
@@ -59,6 +71,10 @@ module.exports.connectMediasoup = async (io) => {
      */
     socket.on('joinRoom', async ({ roomName }, callback) => {
       try {
+        if (peers[socket.id]) {
+          console.log('Peer already joined...');
+          return;
+        }
         let router;
         ({ router, rooms } = await createRoom(roomName, socket.id, rooms, worker));
     

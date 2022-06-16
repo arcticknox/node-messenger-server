@@ -5,11 +5,11 @@ const mediasoupClient = require('mediasoup-client');
 
 const roomName = window.location.pathname.split('/')[2];
 
+// Remove /api from path for dev
 const socket = io('/mediasoup', { path: '/api/socket.io' });
 
 socket.on('connection-success', ({ socketId }) => {
-  console.log(socketId);
-  getLocalStream();
+  console.log('Connection successful: ', socketId);
 });
 
 let device;
@@ -69,6 +69,10 @@ const joinRoom = () => {
     // once we have rtpCapabilities from the Router, create Device
     createDevice();
   });
+};
+
+const exitRoom = () => {
+  socket.emit('exitRoom');
 };
 
 const getLocalStream = () => {
@@ -338,3 +342,6 @@ socket.on('producer-closed', ({ remoteProducerId }) => {
   // remove the video div element
   videoContainer.removeChild(document.getElementById(`td-${remoteProducerId}`));
 });
+
+joinButton.addEventListener('click', getLocalStream);
+exitButton.addEventListener('click', exitRoom);

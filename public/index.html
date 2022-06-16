@@ -19,6 +19,9 @@
         .localColumn {
             width: 246px;
         }
+        .buttonColumn {
+            width: 5px;
+        }
         .remoteColumn {
             display: flex;
             flex-wrap: wrap;
@@ -63,6 +66,12 @@
                         </td>
                         <td class="remoteColumn">
                             <div id="videoContainer"></div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="buttonColumn">
+                            <button id="joinButton">Join</button>
+                            <button id="exitButton">Exit</button>
                         </td>
                     </tr>
                 </tbody>
