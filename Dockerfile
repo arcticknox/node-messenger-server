@@ -4,7 +4,7 @@ LABEL description='messenger-server dockerfile'
 RUN \
 	set -x \
 	&& apt-get update \
-	&& apt-get install -y net-tools build-essential python3 python3-pip valgrind
+	&& apt-get install -y net-tools build-essential python3 python3-pip
 
 WORKDIR /messenger-server
 COPY package*.json ./

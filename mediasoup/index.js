@@ -50,29 +50,42 @@ module.exports.connectMediasoup = async (io) => {
       };
     });
 
+    /**
+     * Join Room
+     * Create room/router if it does not exist or join the router
+     * Router : Room
+     */
     socket.on('joinRoom', async ({ roomName }, callback) => {
-    // create Router if it does not exist
-    // const router = rooms[roomName] && rooms[roomName].get('data').router || await createRoom(roomName, socket.id)
-      let router;
-      ({ router, rooms } = await createRoom(roomName, socket.id, rooms, worker));
+      try {
+        let router;
+        ({ router, rooms } = await createRoom(roomName, socket.id, rooms, worker));
+    
+        peers[socket.id] = {
+          socket,
+          roomName, // Name for the Router this Peer joined
+          transports: [],
+          producers: [],
+          consumers: [],
+          peerDetails: {
+            name: '',
+            isAdmin: false, // Is this Peer the Admin?
+          }
+        };
+    
+        // get Router RTP Capabilities
+        const rtpCapabilities = router.rtpCapabilities;
+    
+        // call callback from the client and send back the rtpCapabilities
+        callback({ rtpCapabilities });
 
-      peers[socket.id] = {
-        socket,
-        roomName, // Name for the Router this Peer joined
-        transports: [],
-        producers: [],
-        consumers: [],
-        peerDetails: {
-          name: '',
-          isAdmin: false, // Is this Peer the Admin?
-        }
-      };
-
-      // get Router RTP Capabilities
-      const rtpCapabilities = router.rtpCapabilities;
-
-      // call callback from the client and send back the rtpCapabilities
-      callback({ rtpCapabilities });
+      } catch (error) {
+        console.log(error.message);
+        callback({
+          params: {
+            error
+          }
+        });
+      }
     });
 
     // Client emits a request to create server side Transport
