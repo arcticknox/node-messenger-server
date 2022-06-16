@@ -1,3 +1,4 @@
+const logger = require('../config/logger');
 const { 
   createWorker, 
   removeItems, 
@@ -6,6 +7,7 @@ const {
 } = require('./mediasoup');
 
 module.exports.connectMediasoup = async (io) => {
+  logger.info('Mediasoup enabled.');
   const connections = io.of('/mediasoup');
 
   /**

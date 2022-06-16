@@ -31,7 +31,8 @@ const initMongoDB = () => {
 server.listen(config.port, () => {
   initMongoDB();
   socketIO(io);
-  connectMediasoup(io);
+  // Mediasoup
+  if (config.enableMediasoup) connectMediasoup(io);
   logger.info(`App server listening on port ${config.port}`);
 });
 

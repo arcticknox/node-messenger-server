@@ -27,7 +27,8 @@ const envVarsSchema = Joi.object()
     CORS: Joi.boolean().default(false),
     CORS_WHITELIST: Joi.string().default('[]'),
     BYPASS_VERIFY_EMAIL: Joi.boolean().default(false),
-    WEBRTC_ANNOUNCE_IP: Joi.string().default('127.0.0.1')
+    WEBRTC_ANNOUNCE_IP: Joi.string().default('127.0.0.1'),
+    ENABLE_MEDIASOUP: Joi.boolean().default(false)
   })
   .unknown();
 
@@ -70,5 +71,6 @@ module.exports = {
   cors: envVars.CORS,
   corsWhitelist: JSON.parse(envVars.CORS_WHITELIST),
   bypassVerifyEmail: envVars.BYPASS_VERIFY_EMAIL,
-  webRTCAnnounceIp: envVars.WEBRTC_ANNOUNCE_IP
+  webRTCAnnounceIp: envVars.WEBRTC_ANNOUNCE_IP,
+  enableMediasoup: envVars.ENABLE_MEDIASOUP
 };
