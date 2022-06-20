@@ -4,7 +4,7 @@ const io = require('socket.io-client');
 const mediasoupClient = require('mediasoup-client');
 const { mediasoupEvents } = require('../config/events');
 
-const roomName = window.location.pathname.split('/')[2];
+const roomName = window.location.pathname.split('/')[3];
 
 // Remove /api from path for dev
 const socket = io('http://localhost:3000', { path: '/socket.io' });
