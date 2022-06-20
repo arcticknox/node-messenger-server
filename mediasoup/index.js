@@ -6,9 +6,10 @@ const {
   createWebRtcTransport 
 } = require('./mediasoup');
 
+const { mediasoupEvents } = require('../config/events');
+
 module.exports.connectMediasoup = async (io) => {
   logger.info('Mediasoup enabled.');
-  const connections = io.of('/mediasoup');
 
   /**
  * Worker
@@ -29,9 +30,9 @@ module.exports.connectMediasoup = async (io) => {
   // TODO: Create worker by the num of cores
   worker = await createWorker();
 
-  connections.on('connection', async socket => {
-    console.log('Client connected: ', socket.id);
-    socket.emit('connection-success', {
+  io.on('connection', async socket => {
+    console.log(`${socket.id} has connected to mediasoup socket!`);
+    socket.emit(mediasoupEvents.connectionSuccess, {
       socketId: socket.id,
     });
 
@@ -60,7 +61,7 @@ module.exports.connectMediasoup = async (io) => {
       exitRoomAndCleanup();
     });
 
-    socket.on('exitRoom', () => {
+    socket.on(mediasoupEvents.exitRoom, () => {
       exitRoomAndCleanup();
     });
 
@@ -69,7 +70,7 @@ module.exports.connectMediasoup = async (io) => {
      * Create room/router if it does not exist or join the router
      * Router : Room
      */
-    socket.on('joinRoom', async ({ roomName }, callback) => {
+    socket.on(mediasoupEvents.joinRoom, async ({ roomName }, callback) => {
       try {
         if (peers[socket.id]) {
           console.log('Peer already joined...');
@@ -108,7 +109,7 @@ module.exports.connectMediasoup = async (io) => {
 
     // Client emits a request to create server side Transport
     // We need to differentiate between the producer and consumer transports
-    socket.on('createWebRtcTransport', async ({ consumer }, callback) => {
+    socket.on(mediasoupEvents.createWebRTCTransport, async ({ consumer }, callback) => {
     // get Room Name from Peer's properties
       const roomName = peers[socket.id].roomName;
 
@@ -183,7 +184,7 @@ module.exports.connectMediasoup = async (io) => {
       };
     };
 
-    socket.on('getProducers', callback => {
+    socket.on(mediasoupEvents.getProducers, callback => {
     //return all producer transports
       const { roomName } = peers[socket.id];
 
@@ -206,7 +207,7 @@ module.exports.connectMediasoup = async (io) => {
         if (producerData.socketId !== socketId && producerData.roomName === roomName) {
           const producerSocket = peers[producerData.socketId].socket;
           // use socket to send producer id to producer
-          producerSocket.emit('new-producer', { producerId: id });
+          producerSocket.emit(mediasoupEvents.newProducer, { producerId: id });
         }
       });
     };
@@ -216,16 +217,14 @@ module.exports.connectMediasoup = async (io) => {
       return producerTransport.transport;
     };
 
-    // see client's socket.emit('transport-connect', ...)
-    socket.on('transport-connect', ({ dtlsParameters }) => {
+    socket.on(mediasoupEvents.transportConnect, ({ dtlsParameters }) => {
       console.log('DTLS PARAMS... ', { dtlsParameters });
     
       getTransport(socket.id).connect({ dtlsParameters });
     });
 
-    // see client's socket.emit('transport-produce', ...)
     // eslint-disable-next-line no-unused-vars
-    socket.on('transport-produce', async ({ kind, rtpParameters, appData }, callback) => {
+    socket.on(mediasoupEvents.transportProduce, async ({ kind, rtpParameters, appData }, callback) => {
     // call produce based on the prameters from the client
       const producer = await getTransport(socket.id).produce({
         kind,
@@ -253,8 +252,7 @@ module.exports.connectMediasoup = async (io) => {
       });
     });
 
-    // see client's socket.emit('transport-recv-connect', ...)
-    socket.on('transport-recv-connect', async ({ dtlsParameters, serverConsumerTransportId }) => {
+    socket.on(mediasoupEvents.transportRecvConnect, async ({ dtlsParameters, serverConsumerTransportId }) => {
       console.log(`DTLS PARAMS: ${dtlsParameters}`);
       const consumerTransport = transports.find(transportData => (
         transportData.consumer && transportData.transport.id == serverConsumerTransportId
@@ -262,7 +260,7 @@ module.exports.connectMediasoup = async (io) => {
       await consumerTransport.connect({ dtlsParameters });
     });
 
-    socket.on('consume', async ({ rtpCapabilities, remoteProducerId, serverConsumerTransportId }, callback) => {
+    socket.on(mediasoupEvents.consume, async ({ rtpCapabilities, remoteProducerId, serverConsumerTransportId }, callback) => {
       try {
 
         const { roomName } = peers[socket.id];
@@ -289,7 +287,7 @@ module.exports.connectMediasoup = async (io) => {
 
           consumer.on('producerclose', () => {
             console.log('producer of consumer closed');
-            socket.emit('producer-closed', { remoteProducerId });
+            socket.emit(mediasoupEvents.producerClosed, { remoteProducerId });
 
             consumerTransport.close([]);
             transports = transports.filter(transportData => transportData.transport.id !== consumerTransport.id);
@@ -322,7 +320,7 @@ module.exports.connectMediasoup = async (io) => {
       }
     });
 
-    socket.on('consumer-resume', async ({ serverConsumerId }) => {
+    socket.on(mediasoupEvents.consumerResume, async ({ serverConsumerId }) => {
       console.log('consumer resume');
       const { consumer } = consumers.find(consumerData => consumerData.consumer.id === serverConsumerId);
       await consumer.resume();
