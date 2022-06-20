@@ -2,13 +2,14 @@
 //index.js
 const io = require('socket.io-client');
 const mediasoupClient = require('mediasoup-client');
+const { mediasoupEvents } = require('../config/events');
 
 const roomName = window.location.pathname.split('/')[2];
 
 // Remove /api from path for dev
-const socket = io('/mediasoup', { path: '/api/socket.io' });
+const socket = io('http://localhost:3000', { path: '/socket.io' });
 
-socket.on('connection-success', ({ socketId }) => {
+socket.on(mediasoupEvents.connectionSuccess, ({ socketId }) => {
   console.log('Connection successful: ', socketId);
 });
 
@@ -60,7 +61,7 @@ const streamSuccess = (stream) => {
 };
 
 const joinRoom = () => {
-  socket.emit('joinRoom', { roomName }, (data) => {
+  socket.emit(mediasoupEvents.joinRoom, { roomName }, (data) => {
     console.log(`Router RTP Capabilities... ${data.rtpCapabilities}`);
     // we assign to local variable and will be used when
     // loading the client Device (see createDevice above)
@@ -72,7 +73,7 @@ const joinRoom = () => {
 };
 
 const exitRoom = () => {
-  socket.emit('exitRoom');
+  socket.emit(mediasoupEvents.exitRoom);
 };
 
 const getLocalStream = () => {
@@ -114,7 +115,7 @@ const createDevice = async () => {
 const createSendTransport = () => {
   // see server's socket.on('createWebRtcTransport', sender?, ...)
   // this is a call from Producer, so sender = true
-  socket.emit('createWebRtcTransport', { consumer: false }, ({ params }) => {
+  socket.emit(mediasoupEvents.createWebRTCTransport, { consumer: false }, ({ params }) => {
     // The server sends back params needed 
     // to create Send Transport on the client side
     if (params.error) {
@@ -136,7 +137,7 @@ const createSendTransport = () => {
       try {
         // Signal local DTLS parameters to the server side transport
         // see server's socket.on('transport-connect', ...)
-        await socket.emit('transport-connect', {
+        await socket.emit(mediasoupEvents.transportConnect, {
           dtlsParameters,
         });
 
@@ -156,7 +157,7 @@ const createSendTransport = () => {
         // with the following parameters and produce
         // and expect back a server side producer id
         // see server's socket.on('transport-produce', ...)
-        await socket.emit('transport-produce', {
+        await socket.emit(mediasoupEvents.transportProduce, {
           kind: parameters.kind,
           rtpParameters: parameters.rtpParameters,
           appData: parameters.appData,
@@ -216,7 +217,7 @@ const signalNewConsumerTransport = async (remoteProducerId) => {
   if (consumingTransports.includes(remoteProducerId)) return;
   consumingTransports.push(remoteProducerId);
 
-  await socket.emit('createWebRtcTransport', { consumer: true }, ({ params }) => {
+  await socket.emit(mediasoupEvents.createWebRTCTransport, { consumer: true }, ({ params }) => {
     // The server sends back params needed 
     // to create Send Transport on the client side
     if (params.error) {
@@ -240,7 +241,7 @@ const signalNewConsumerTransport = async (remoteProducerId) => {
       try {
         // Signal local DTLS parameters to the server side transport
         // see server's socket.on('transport-recv-connect', ...)
-        await socket.emit('transport-recv-connect', {
+        await socket.emit(mediasoupEvents.transportRecvConnect, {
           dtlsParameters,
           serverConsumerTransportId: params.id,
         });
@@ -258,10 +259,10 @@ const signalNewConsumerTransport = async (remoteProducerId) => {
 };
 
 // server informs the client of a new producer just joined
-socket.on('new-producer', ({ producerId }) => signalNewConsumerTransport(producerId));
+socket.on(mediasoupEvents.newProducer, ({ producerId }) => signalNewConsumerTransport(producerId));
 
 const getProducers = () => {
-  socket.emit('getProducers', producerIds => {
+  socket.emit(mediasoupEvents.getProducers, producerIds => {
     console.log(producerIds);
     // for each of the producer create a consumer
     // producerIds.forEach(id => signalNewConsumerTransport(id))
@@ -273,7 +274,7 @@ const connectRecvTransport = async (consumerTransport, remoteProducerId, serverC
   // for consumer, we need to tell the server first
   // to create a consumer based on the rtpCapabilities and consume
   // if the router can consume, it will send back a set of params as below
-  await socket.emit('consume', {
+  await socket.emit(mediasoupEvents.consume, {
     rtpCapabilities: device.rtpCapabilities,
     remoteProducerId,
     serverConsumerTransportId,
@@ -325,11 +326,11 @@ const connectRecvTransport = async (consumerTransport, remoteProducerId, serverC
 
     // the server consumer started with media paused
     // so we need to inform the server to resume
-    socket.emit('consumer-resume', { serverConsumerId: params.serverConsumerId });
+    socket.emit(mediasoupEvents.consumerResume, { serverConsumerId: params.serverConsumerId });
   });
 };
 
-socket.on('producer-closed', ({ remoteProducerId }) => {
+socket.on(mediasoupEvents.producerClosed, ({ remoteProducerId }) => {
   // server notification is received when a producer is closed
   // we need to close the client-side consumer and associated transport
   const producerToClose = consumerTransports.find(transportData => transportData.producerId === remoteProducerId);

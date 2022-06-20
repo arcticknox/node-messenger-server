@@ -1,14 +1,12 @@
 const { sendMessage } = require('../services/socket.service');
 const logger = require('../config/logger');
+const { messengerEvents } = require('../config/events');
 
 module.exports.socketIO = async (io) => {
-  const messenger = io.of('/messenger');
-  let connections = 0;
-  messenger.on('connection', async (socket) => {
-    connections +=1;
-    logger.info(`${socket.id} has connected! Connections: ${connections}`);
+  io.on('connection', async (socket) => {
+    logger.info(`${socket.id} has connected to messenger socket!`);
     // sendMessage event
-    socket.on('sendMessage', payload => sendMessage(payload, messenger));
+    socket.on(messengerEvents.sendMessage, payload => sendMessage(payload, io));
 
   });
   
