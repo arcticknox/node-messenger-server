@@ -1,6 +1,6 @@
 const _ = require('lodash');
-const { createMessage } = require('./message.service');
-const { verifyToken } = require('./token.service');
+const { createMessage } = require('../services/message.service');
+const { verifyToken } = require('../services/token.service');
 const { ChannelModel } = require('../models');
 const logger = require('../config/logger');
 
