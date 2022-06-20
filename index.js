@@ -1,23 +1,17 @@
 const mongoose = require('mongoose');
-const _ = require('lodash');
 const app = require('./app');
 const config = require('./config/config');
 const logger = require('./config/logger');
 const http = require('http');
-const { Server } = require('socket.io');
+const { initSocketIOServer } = require('./socket');
 const { connectMessenger } = require('./messenger');
 const { connectMediasoup } = require('./mediasoup');
 
 // Creating a http server
 const server = http.createServer(app);
 
-// Initializing Socket.io
-const io = new Server(server, {
-  cors: {
-    origin: _.get(config, 'corsWhitelist', '*'),
-    methods: ['GET', 'POST']
-  }
-});
+// Initialize Socket.io
+const io = initSocketIOServer(server);
 
 const initMongoDB = () => {
   mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {

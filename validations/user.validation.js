@@ -49,7 +49,7 @@ const usersByIds = {
   body: Joi.object().keys({
     members: Joi.array(),
   }),
-}
+};
 
 module.exports = {
   createUser,
