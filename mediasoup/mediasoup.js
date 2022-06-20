@@ -20,7 +20,7 @@ const createWorker = async () => {
     rtcMinPort: config.mediasoup.worker.rtcMinPort,
     rtcMaxPort: config.mediasoup.worker.rtcMaxPort,
   });
-  console.log(`Worker started: ${worker.pid}`);
+  console.log(`Mediasoup worker started: ${worker.pid}`);
 
   worker.on('died', error => {
     // This implies something serious happened, so kill the application
