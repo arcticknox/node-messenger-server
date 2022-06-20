@@ -4,7 +4,7 @@ const { verifyToken } = require('../services/token.service');
 const { ChannelModel } = require('../models');
 const logger = require('../config/logger');
 
-module.exports.sendMessage = async (payload, io) => {
+const sendMessage = async (payload, io) => {
   const { message, channelId, user, tokens } = JSON.parse(payload);
   const channel = await ChannelModel.findOne({ _id: channelId, status: 'active' });
   if (channel) {
@@ -13,7 +13,7 @@ module.exports.sendMessage = async (payload, io) => {
       const { members, id } = channel;
 
       if (members && members.indexOf(user.id) > -1) {
-        io.emit(id, JSON.stringify(await createMessage(channelId, { message }, user)));
+        io.to(id).emit(id, JSON.stringify(await createMessage(channelId, { message }, user)));
       }
     } else {
       logger.error(`Token of ${user.id} has expired.`);
@@ -21,4 +21,19 @@ module.exports.sendMessage = async (payload, io) => {
   } else {
     logger.error('Channel doesn\'t exist or might be inactive.');
   }
+};
+
+const initRooms = async (payload, socket) => {
+  const { id } = JSON.parse(payload);
+  const channels = await ChannelModel.find({ members: id });
+  if (!channels) return;
+  _.forEach(channels, channel => {
+    console.log('initing room: ', channel.id);
+    socket.join(channel.id);
+  }); 
+};
+
+module.exports = {
+  sendMessage,
+  initRooms
 };
