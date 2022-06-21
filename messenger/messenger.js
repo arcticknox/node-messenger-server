@@ -4,6 +4,11 @@ const { verifyToken } = require('../services/token.service');
 const { ChannelModel } = require('../models');
 const logger = require('../config/logger');
 
+/**
+ * Send message to a specific room/channel
+ * @param {Object} payload 
+ * @param {*} io 
+ */
 const sendMessage = async (payload, io) => {
   const { message, channelId, user, tokens } = JSON.parse(payload);
   const channel = await ChannelModel.findOne({ _id: channelId, status: 'active' });
@@ -23,6 +28,11 @@ const sendMessage = async (payload, io) => {
   }
 };
 
+/**
+ * Fetch client channels and join
+ * @param {Object} payload 
+ * @param {*} socket 
+ */
 const initRooms = async (payload, socket) => {
   const { id } = JSON.parse(payload);
   const channels = await ChannelModel.find({ members: id });

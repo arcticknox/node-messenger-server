@@ -7,8 +7,7 @@ module.exports.connectMessenger = async (io) => {
     logger.info(`${socket.id} has connected to messenger socket!`);
     // sendMessage event
     socket.on(messengerEvents.sendMessage, payload => sendMessage(payload, io));
-
-    // Rooms
+    // Init rooms
     socket.on('common:init-rooms', payload => initRooms(payload, socket));
   });
 };
