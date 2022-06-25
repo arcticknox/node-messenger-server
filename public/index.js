@@ -4,10 +4,10 @@ const io = require('socket.io-client');
 const mediasoupClient = require('mediasoup-client');
 const { mediasoupEvents } = require('../config/events');
 
-const roomName = window.location.pathname.split('/')[3];
+const roomName = 'lobby';
 
 // Remove /api from path for dev
-const socket = io('http://localhost:3000', { path: '/socket.io' });
+const socket = io({ path: '/api/socket.io' });
 
 socket.on(mediasoupEvents.connectionSuccess, ({ socketId }) => {
   console.log('Connection successful: ', socketId);
@@ -73,7 +73,9 @@ const joinRoom = () => {
 };
 
 const exitRoom = () => {
-  socket.emit(mediasoupEvents.exitRoom);
+  socket.emit(mediasoupEvents.exitRoom, payload => {
+    console.log('Exit room payload', payload);
+  });
 };
 
 const getLocalStream = () => {

@@ -61,8 +61,12 @@ module.exports.connectMediasoup = async (io) => {
       exitRoomAndCleanup();
     });
 
-    socket.on(mediasoupEvents.exitRoom, () => {
+    socket.on(mediasoupEvents.exitRoom, (callback) => {
       exitRoomAndCleanup();
+      callback({
+        success: true,
+        socketId: socket.id
+      });
     });
 
     /**
