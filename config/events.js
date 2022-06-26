@@ -4,7 +4,8 @@
  */
 
 const messengerEvents = {
-  sendMessage: 'messenger:send'
+  sendMessage: 'messenger:send',
+  createChannel: 'messenger:create-channel'
 };
 
 const mediasoupEvents = {

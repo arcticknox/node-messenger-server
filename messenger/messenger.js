@@ -44,7 +44,17 @@ const initRooms = async (payload, socket) => {
   }); 
 };
 
+/**
+ * Join room for single client
+ * @param {*} socket 
+ * @param {String} channelId 
+ */
+const initRoom = async (socket, channelId) => {
+  socket.join(channelId);
+};
+
 module.exports = {
   sendMessage,
-  initRooms
+  initRooms,
+  initRoom
 };
