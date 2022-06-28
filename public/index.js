@@ -52,8 +52,8 @@ let videoParams = { params };
 let consumingTransports = [];
 
 const streamSuccess = (stream) => {
+  document.getElementById('localVideo').style.visibility = 'visible';
   localVideo.srcObject = stream;
-
   audioParams = { track: stream.getAudioTracks()[0], ...audioParams };
   videoParams = { track: stream.getVideoTracks()[0], ...videoParams };
 
@@ -75,6 +75,14 @@ const joinRoom = () => {
 const exitRoom = () => {
   socket.emit(mediasoupEvents.exitRoom, payload => {
     console.log('Exit room payload', payload);
+    consumerTransports.forEach(producer => {
+      videoContainer.removeChild(document.getElementById(`td-${producer.producerId}`));
+    });
+    let elem = document.getElementById('localVideo');
+    elem.srcObject.getTracks().forEach(function (track) {
+      track.stop();
+    });
+    document.getElementById('localVideo').style.visibility = 'hidden';
   });
 };
 
@@ -185,33 +193,37 @@ const connectSendTransport = async () => {
   // to send media to the Router
   // https://mediasoup.org/documentation/v3/mediasoup-client/api/#transport-produce
   // this action will trigger the 'connect' and 'produce' events above
+  try {
+    audioProducer = await producerTransport.produce(audioParams);
+    videoProducer = await producerTransport.produce(videoParams);
   
-  audioProducer = await producerTransport.produce(audioParams);
-  videoProducer = await producerTransport.produce(videoParams);
-
-  audioProducer.on('trackended', () => {
-    console.log('audio track ended');
-
-    // close audio track
-  });
-
-  audioProducer.on('transportclose', () => {
-    console.log('audio transport ended');
-
-    // close audio track
-  });
+    audioProducer.on('trackended', () => {
+      console.log('audio track ended');
   
-  videoProducer.on('trackended', () => {
-    console.log('video track ended');
+      // close audio track
+    });
+  
+    audioProducer.on('transportclose', () => {
+      console.log('audio transport ended');
+  
+      // close audio track
+    });
+    
+    videoProducer.on('trackended', () => {
+      console.log('video track ended');
+  
+      // close video track
+    });
+  
+    videoProducer.on('transportclose', () => {
+      console.log('video transport ended');
+  
+      // close video track
+    });
 
-    // close video track
-  });
-
-  videoProducer.on('transportclose', () => {
-    console.log('video transport ended');
-
-    // close video track
-  });
+  } catch (e) {
+    console.log('Produce error', e);
+  }
 };
 
 const signalNewConsumerTransport = async (remoteProducerId) => {
