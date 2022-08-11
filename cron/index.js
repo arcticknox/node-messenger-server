@@ -9,7 +9,7 @@ let tasks = [];
  * Deletes specified days old messages
  * based on MESSAGE_RETENTION env variable
  */
-tasks.push(cron.schedule('2 * * * * *', async () => {
+tasks.push(cron.schedule('* * 20 * * *', async () => {
     logger.info('***** Started: Delete Old Messages *****')
 
     let date = new Date();
