@@ -42,8 +42,23 @@ const deleteMessage = async (channelId, messageId) => {
   return MessageModel.updateOne({ _id: messageId, channelId }, { $set: { status: 'deleted' } });
 };
 
+/**
+ * Delete messages
+ * @param {object} query
+ * @returns {Promise}
+ */
+const deleteMessages = async (query) => {
+  // return await MessageModel.find({
+  //   createdAt: {
+  //     $lt: new Date(2022, 7, 11)
+  //   }
+  // });
+  return await MessageModel.deleteMany(query);
+};
+
 module.exports = {
   createMessage,
   getPreviousMessages,
-  deleteMessage
+  deleteMessage,
+  deleteMessages
 };

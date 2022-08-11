@@ -6,6 +6,7 @@ const http = require('http');
 const { initSocketIOServer } = require('./socket');
 const { connectMessenger } = require('./messenger');
 const { connectMediasoup } = require('./mediasoup');
+const { startCronTasks, stopCronTasks } = require('./cron');
 
 // Creating a http server
 const server = http.createServer(app);
@@ -28,6 +29,9 @@ server.listen(config.port, () => {
   // Mediasoup
   if (config.enableMediasoup) connectMediasoup(io);
   logger.info(`App server listening on port ${config.port}`);
+
+  logger.info('Starting Cron tasks...')
+  startCronTasks();
 });
 
 const exitHandler = () => {
@@ -52,6 +56,9 @@ process.on('unhandledRejection', unexpectedErrorHandler);
 process.on('SIGTERM', () => {
   logger.info('SIGTERM received');
   if (server) {
+    logger.info("Stopping Cron tasks...");
+    stopCronTasks();
+    
     server.close();
   }
 });
