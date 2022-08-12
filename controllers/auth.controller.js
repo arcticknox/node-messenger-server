@@ -54,6 +54,11 @@ const verifyEmail = catchAsync(async (req, res) => {
   res.sendFile(path.resolve('public/emailVerified.html'));
 });
 
+const checkEmail = catchAsync(async (req, res) => {
+  const count = await AuthService.checkEmail(req.query.email);
+  responseHandler(req, res, { count })
+});
+
 module.exports = {
   register,
   login,
@@ -63,4 +68,5 @@ module.exports = {
   resetPassword,
   sendVerificationEmail,
   verifyEmail,
+  checkEmail,
 };
