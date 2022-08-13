@@ -40,6 +40,11 @@ const getUsersByIds = catchAsync(async (req, res) => {
   responseHandler(req, res, users);
 });
 
+const searchByEmail = catchAsync(async (req, res) => {
+  const users = await UserService.searchByEmail(req.params.email);
+  responseHandler(req, res, users);
+});
+
 module.exports = {
   createUser,
   getUsers,
@@ -47,4 +52,5 @@ module.exports = {
   updateUser,
   deleteUser,
   getUsersByIds,
+  searchByEmail,
 };

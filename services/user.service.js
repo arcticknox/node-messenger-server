@@ -118,6 +118,20 @@ const getUsersByIds = async (members) => {
   return users;
 };
 
+/**
+ * Search users by email
+ * @param {string} text 
+ * @returns {Promise<QueryResult>}
+ */
+const searchByEmail = async (text) => {
+  return await UserModel.find({
+    email: {
+      $regex: text,
+      $options: 'i'
+    }
+  });
+}
+
 module.exports = {
   createUser,
   queryUsers,
@@ -126,5 +140,6 @@ module.exports = {
   updateUserById,
   deleteUserById,
   queryAllUsers,
-  getUsersByIds
+  getUsersByIds,
+  searchByEmail,
 };

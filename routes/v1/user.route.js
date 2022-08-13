@@ -21,4 +21,8 @@ router
   .route('/getUsersByIds')
   .post(auth(), validate(userValidation.usersByIds), userController.getUsersByIds);
 
+router
+  .route('/searchByEmail/:email')
+  .get(auth('getUsers'), validate(userValidation.searchByEmail), userController.searchByEmail);
+
 module.exports = router;

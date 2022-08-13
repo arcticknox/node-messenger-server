@@ -51,6 +51,12 @@ const usersByIds = {
   }),
 };
 
+const searchByEmail = {
+  params: Joi.object().keys({
+    email: Joi.string(),
+  }),
+}
+
 module.exports = {
   createUser,
   getUsers,
@@ -58,4 +64,5 @@ module.exports = {
   updateUser,
   deleteUser,
   usersByIds,
+  searchByEmail,
 };
