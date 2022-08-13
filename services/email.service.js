@@ -30,10 +30,10 @@ const sendEmail = async (to, subject, text) => {
  * @returns {Promise}
  */
 const sendResetPasswordEmail = async (to, token) => {
-  const subject = 'Reset password';
+  const subject = `${config.appName}${config.env === 'dev' ? '-' + config.env : ''}: Reset password`;
   // replace this url with the link to the reset password page of your front-end app
   const resetPasswordUrl = `${config.email.verifyDomain}/v1/auth/reset-password?token=${token}`;
-  const text = `Dear user,
+  const text = `Dear user,\n
 To reset your password, click on this link: ${resetPasswordUrl}
 If you did not request any password resets, then ignore this email.`;
   await sendEmail(to, subject, text);

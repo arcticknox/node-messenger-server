@@ -2,6 +2,7 @@ const catchAsync = require('../utils/catchAsync');
 const path = require('path');
 const responseHandler = require('../utils/responseHandler');
 const { AuthService, UserService, TokenService, EmailService } = require('../services');
+const httpStatus = require('http-status');
 
 const createTokenAndSendVerificationEmail = async (user) => {
   const verifyEmailToken = await TokenService.generateVerifyEmailToken(user);
@@ -33,9 +34,14 @@ const refreshTokens = catchAsync(async (req, res) => {
 });
 
 const forgotPassword = catchAsync(async (req, res) => {
-  const resetPasswordToken = await TokenService.generateResetPasswordToken(req.body.email);
-  await EmailService.sendResetPasswordEmail(req.body.email, resetPasswordToken);
-  responseHandler(req, res);
+  const emailCount = await AuthService.checkEmail(req.body.email);
+  if (emailCount) {
+    const resetPasswordToken = await TokenService.generateResetPasswordToken(req.body.email);
+    await EmailService.sendResetPasswordEmail(req.body.email, resetPasswordToken);
+    responseHandler(req, res);
+    return;
+  }
+  responseHandler(req, res, { message: `User with email ${req.body.email} doesn't exists!` }, httpStatus.BAD_REQUEST);
 });
 
 const resetPassword = catchAsync(async (req, res) => {
@@ -54,11 +60,6 @@ const verifyEmail = catchAsync(async (req, res) => {
   res.sendFile(path.resolve('public/emailVerified.html'));
 });
 
-const checkEmail = catchAsync(async (req, res) => {
-  const count = await AuthService.checkEmail(req.query.email);
-  responseHandler(req, res, { count })
-});
-
 module.exports = {
   register,
   login,
@@ -68,5 +69,4 @@ module.exports = {
   resetPassword,
   sendVerificationEmail,
   verifyEmail,
-  checkEmail,
 };
