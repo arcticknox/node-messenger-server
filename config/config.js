@@ -29,7 +29,8 @@ const envVarsSchema = Joi.object()
     BYPASS_VERIFY_EMAIL: Joi.boolean().default(false),
     WEBRTC_ANNOUNCE_IP: Joi.string().default('127.0.0.1'),
     ENABLE_MEDIASOUP: Joi.boolean().default(false),
-    MESSAGE_RETENTION: Joi.number().default(30)
+    MESSAGE_RETENTION: Joi.number().default(30),
+    APP_NAME: Joi.string().default('APP'),
   })
   .unknown();
 
@@ -74,5 +75,6 @@ module.exports = {
   bypassVerifyEmail: envVars.BYPASS_VERIFY_EMAIL,
   webRTCAnnounceIp: envVars.WEBRTC_ANNOUNCE_IP,
   enableMediasoup: envVars.ENABLE_MEDIASOUP,
-  messageRetention: envVars.MESSAGE_RETENTION
+  messageRetention: envVars.MESSAGE_RETENTION,
+  appName: envVars.APP_NAME,
 };
