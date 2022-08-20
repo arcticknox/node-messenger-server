@@ -49,7 +49,7 @@ const inviteToChannel = catchAsync(async (req, res) => {
 });
 
 const genInviteToken = catchAsync(async (req, res) => {
-  const token = await TokenService.generateVerifyEmailToken(req.user);
+  const token = await TokenService.generateChannelInviteToken(req.params.channelId);
   responseHandler(req, res, { token });
 });
 
