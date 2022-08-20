@@ -19,5 +19,7 @@ router
 
 
 router.route('/:channelId/leave').post(auth(), channelController.leave);  
+router.route('/:channelId/generateInviteToken').get(auth(), channelController.genInviteToken);
+router.route('/:channelId/invite').get(auth(), channelController.inviteToChannel);
 
 module.exports = router;
