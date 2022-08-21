@@ -5,7 +5,12 @@
 
 const messengerEvents = {
   sendMessage: 'messenger:send',
-  createChannel: 'messenger:create-channel'
+  createChannel: 'messenger:create-channel',
+  joinFromInviteLink: 'messenger:join-from-invite-link'
+};
+
+const commonEvents = {
+  initRooms: 'common:init-rooms'
 };
 
 const mediasoupEvents = {
@@ -26,4 +31,5 @@ const mediasoupEvents = {
 module.exports = {
   messengerEvents,
   mediasoupEvents,
+  commonEvents
 };

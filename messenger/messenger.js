@@ -53,8 +53,22 @@ const initRoom = async (socket, channelId) => {
   socket.join(channelId);
 };
 
+/**
+ * Join using channel invite link
+ * @param {*} socket 
+ * @param {String} channelId 
+ * @param {*} io 
+ */
+const joinFromInviteLink = async (socket, payload, io) => {
+  const { channelId, name } = payload;
+  socket.join(channelId);
+  // Send confirm event on join
+  io.to(channelId).emit('messenger:joined-from-invite-link', `${name} has joined.`);
+};
+
 module.exports = {
   sendMessage,
   initRooms,
-  initRoom
+  initRoom,
+  joinFromInviteLink
 };
