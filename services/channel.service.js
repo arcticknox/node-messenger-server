@@ -103,9 +103,8 @@ const listAllChannels = async () => await ChannelModel.find();
 const inviteToChannel = async (channelId, userId) => {
   const channel = await ChannelModel.findOne({ _id: channelId });
   if (!channel) throw new ApiError(httpStatus.NOT_FOUND, 'Channel not found or link expired.');
-  // return ChannelModel.findOneAndUpdate({ _id: channelId }, { $set: { $push: { members: userId } } });
-  channel.members.push(userId);
-  return await channel.save();
+  return ChannelModel.findOneAndUpdate({ _id: channelId }, { $set: { $push: { members: userId } } });
+  
 };
 
 module.exports = {
