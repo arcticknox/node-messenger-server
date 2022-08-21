@@ -7,7 +7,7 @@ const { deleteMessages } = require('../services/message.service');
  * based on MESSAGE_RETENTION env variable
  */
 const deleteOldMessages = {
-  schedule: '5 * * * * *',
+  schedule: '* * 23 * * *',
   function: async () => {
     logger.info(`***** Started: Delete ${config.messageRetention} days old messages *****`);
 
