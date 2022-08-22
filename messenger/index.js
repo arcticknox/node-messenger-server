@@ -1,4 +1,10 @@
-const { sendMessage, initRooms, initRoom, joinFromInviteLink } = require('./messenger');
+const { 
+  sendMessage, 
+  initRooms, 
+  initRoom, 
+  joinFromInviteLink,
+  leaveRoom 
+} = require('./messenger');
 const logger = require('../config/logger');
 const { messengerEvents, commonEvents } = require('../config/events');
 
@@ -13,5 +19,7 @@ module.exports.connectMessenger = async (io) => {
     socket.on(messengerEvents.createChannel, payload => initRoom(socket, payload));
     // Join channel from invite link
     socket.on(messengerEvents.joinFromInviteLink, payload => joinFromInviteLink(socket, payload, io));
+    // Leave room
+    socket.on(messengerEvents.leaveChannel, payload => leaveRoom(socket, payload, io));
   });
 };

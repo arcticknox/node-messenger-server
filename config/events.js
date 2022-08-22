@@ -7,7 +7,9 @@ const messengerEvents = {
   sendMessage: 'messenger:send',
   createChannel: 'messenger:create-channel',
   joinFromInviteLink: 'messenger:join-from-invite-link',
-  joinedFromInviteLink: 'messenger:joined-from-invite-link'
+  joinedFromInviteLink: 'messenger:joined-from-invite-link',
+  leaveChannel: 'messenger:leave-channel',
+  confirmLeaveChannel: 'messenger:confirm-leave-channel'
 };
 
 const commonEvents = {
