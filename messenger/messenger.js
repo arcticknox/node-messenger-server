@@ -16,11 +16,8 @@ const sendMessage = async (payload, io) => {
   if (channel) {
     const tokenDoc = await verifyToken(_.get(tokens, 'refresh.token'), 'refresh');
     if (tokenDoc) {
-      const { members, id } = channel;
-
-      if (members && members.indexOf(user.id) > -1) {
-        io.to(id).emit(id, JSON.stringify(await createMessage(channelId, { message }, user)));
-      }
+      const { id } = channel;
+      io.to(id).emit(id, JSON.stringify(await createMessage(channelId, { message }, user)));
     } else {
       logger.error(`Token of ${user.id} has expired.`);
     }
