@@ -5,7 +5,6 @@ const { TokenModel, UserModel } = require('../models');
 const ApiError = require('../utils/ApiError');
 const { tokenTypes } = require('../config/tokens');
 const config = require('../config/config');
-const { email } = require('../config/config');
 
 /**
  * Login with username and password
@@ -102,7 +101,7 @@ const verifyEmail = async (verifyEmailToken) => {
  */
 const checkEmail = async (email) => {
   return await UserModel.countDocuments({ email: email });
-}
+};
 
 module.exports = {
   loginUserWithEmailAndPassword,
