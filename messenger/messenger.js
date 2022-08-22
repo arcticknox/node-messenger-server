@@ -67,9 +67,15 @@ const joinFromInviteLink = async (socket, payload, io) => {
   io.to(channelId).emit(messengerEvents.joinedFromInviteLink, `${name} has joined.`);
 };
 
+const leaveRoom = async (socket, channelId, io) => {
+  socket.leave(channelId);
+  io.to(channelId).emit(messengerEvents.confirmLeaveChannel);
+};
+
 module.exports = {
   sendMessage,
   initRooms,
   initRoom,
-  joinFromInviteLink
+  joinFromInviteLink,
+  leaveRoom
 };
