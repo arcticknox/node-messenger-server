@@ -23,7 +23,7 @@
     "http-status": "^1.5.2",
     "joi": "^17.6.0",
     "lodash": "^4.17.21",
-    "mediasoup": "^3.9.17",
+    "mediasoup": "^3.10.5",
     "mediasoup-client": "^3.6.52",
     "moment": "^2.29.3",
     "mongoose": "^6.3.2",
