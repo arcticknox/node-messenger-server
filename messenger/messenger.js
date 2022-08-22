@@ -3,6 +3,7 @@ const { createMessage } = require('../services/message.service');
 const { verifyToken } = require('../services/token.service');
 const { ChannelModel } = require('../models');
 const logger = require('../config/logger');
+const { messengerEvents } = require('../config/events');
 
 /**
  * Send message to a specific room/channel
@@ -53,8 +54,22 @@ const initRoom = async (socket, channelId) => {
   socket.join(channelId);
 };
 
+/**
+ * Join using channel invite link
+ * @param {*} socket 
+ * @param {String} channelId 
+ * @param {*} io 
+ */
+const joinFromInviteLink = async (socket, payload, io) => {
+  const { channelId, name } = payload;
+  socket.join(channelId);
+  // Send confirm event on join
+  io.to(channelId).emit(messengerEvents.joinedFromInviteLink, `${name} has joined.`);
+};
+
 module.exports = {
   sendMessage,
   initRooms,
-  initRoom
+  initRoom,
+  joinFromInviteLink
 };

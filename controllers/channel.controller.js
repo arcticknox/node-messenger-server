@@ -1,8 +1,9 @@
 const _ = require('lodash');
 const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
-const { ChannelService } = require('../services');
+const { ChannelService, TokenService } = require('../services');
 const ApiError = require('../utils/ApiError');
+const { tokenTypes } = require('../config/tokens');
 const responseHandler = require('../utils/responseHandler');
 
 const create = catchAsync(async (req, res) => {
@@ -41,11 +42,24 @@ const updateChannel = catchAsync(async (req, res) => {
   responseHandler(req, res, channel);
 });
 
+const inviteToChannel = catchAsync(async (req, res) => {
+  await TokenService.verifyToken(req.query.token, tokenTypes.VERIFY_EMAIL);
+  const channel = await ChannelService.inviteToChannel(req.params.channelId, req.user.id);
+  responseHandler(req, res, channel);
+});
+
+const genInviteToken = catchAsync(async (req, res) => {
+  const token = await TokenService.generateChannelInviteToken(req.params.channelId);
+  responseHandler(req, res, { token });
+});
+
 module.exports = {
   create,
   list,
   getChannel,
   deleteChannel,
   leave,
-  updateChannel
+  updateChannel,
+  inviteToChannel,
+  genInviteToken
 };

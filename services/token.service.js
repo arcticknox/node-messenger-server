@@ -113,6 +113,18 @@ const generateVerifyEmailToken = async (user) => {
   return verifyEmailToken;
 };
 
+/**
+ * Generate channel invite token
+ * @param {String} channelId 
+ * @returns 
+ */
+const generateChannelInviteToken = async (channelId) => {
+  const expires = moment().add(config.jwt.channelInviteExpirationMinutes, 'minutes');
+  const channelInviteToken = generateToken(channelId, expires, tokenTypes.CHANNEL_INVITE);
+  await saveToken(channelInviteToken, channelId, expires, tokenTypes.VERIFY_EMAIL);
+  return channelInviteToken;
+};
+
 module.exports = {
   generateToken,
   saveToken,
@@ -120,4 +132,5 @@ module.exports = {
   generateAuthTokens,
   generateResetPasswordToken,
   generateVerifyEmailToken,
+  generateChannelInviteToken
 };
