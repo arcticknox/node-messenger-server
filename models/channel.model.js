@@ -5,7 +5,7 @@ const ChannelSchema = mongoose.Schema(
   {
     name: {
       type: String,
-      required: true 
+      required: true
     },
     ownerId: {
       type: mongoose.SchemaTypes.ObjectId,
@@ -23,6 +23,11 @@ const ChannelSchema = mongoose.Schema(
       enum: ['active', 'deleted'],
       default: 'active',
       required: true
+    },
+    orgId: {
+      type: mongoose.SchemaTypes.ObjectId,
+      required: true,
+      index: true,
     },
   },
   {
