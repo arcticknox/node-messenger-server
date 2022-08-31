@@ -9,7 +9,7 @@ const router = express.Router();
 router
   .route('/')
   .post(auth(), validate(channelValidation.create), channelController.create)
-  .get(auth(), channelController.list);
+  .get(auth(), validate(channelValidation.list), channelController.list);
 
 router
   .route('/:channelId')

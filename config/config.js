@@ -34,6 +34,7 @@ const envVarsSchema = Joi.object()
     ENABLE_MEDIASOUP: Joi.boolean().default(false),
     MESSAGE_RETENTION: Joi.number().default(30),
     APP_NAME: Joi.string().default('APP'),
+    MAX_ORGS_CREATION_LIMIT: Joi.number().default(5).description('Maximum number of orgs allowed per user'),
   })
   .unknown();
 
@@ -81,4 +82,5 @@ module.exports = {
   enableMediasoup: envVars.ENABLE_MEDIASOUP,
   messageRetention: envVars.MESSAGE_RETENTION,
   appName: envVars.APP_NAME,
+  maxOrgsAllowed: envVars.MAX_ORGS_CREATION_LIMIT,
 };

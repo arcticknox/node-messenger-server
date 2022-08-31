@@ -25,8 +25,9 @@ const leave = catchAsync(async (req, res) => {
 });
 
 const list = catchAsync(async (req, res) => {
+  const { orgId } = req.body;
   const options = _.pick(req.query, ['sortBy', 'limit', 'page']);
-  const channels = await ChannelService.listChannels(req.user.id, options);
+  const channels = await ChannelService.listChannels(req.user.id, orgId, options);
   responseHandler(req, res, channels);
 });
 

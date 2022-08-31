@@ -55,8 +55,8 @@ const deleteChannel = async (userId, channelId) => {
  * @param {object} options paginate options
  * @returns {Promise}
  */
-const listChannels = async (userId, options) => {
-  const channelInfo = await ChannelModel.paginate({ members: userId, status: 'active' }, options);
+const listChannels = async (userId, orgId, options) => {
+  const channelInfo = await ChannelModel.paginate({ members: userId, orgId, status: 'active' }, options);
   if (!channelInfo) throw new ApiError(httpStatus.NOT_FOUND, 'No channels');
   return channelInfo;
 };
