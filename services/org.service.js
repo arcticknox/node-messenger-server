@@ -55,7 +55,10 @@ const createDefaultLobby = async (org) => {
 };
 
 const deleteOrgChannels = async (orgId, ownerId) => {
-  await Channel.findOneAndUpdate({ orgId, ownerId }, { $set: { status: 'deleted' } }, { new: true });
+  const count = await Channel.countDocuments({ orgId, ownerId, status: 'active' });
+  if (count > 0) {
+    await Channel.updateMany({ orgId, ownerId, status: 'active' }, { status: 'deleted' });
+  }
 };
 
 /**
