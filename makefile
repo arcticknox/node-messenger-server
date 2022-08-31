@@ -1,3 +1,4 @@
+# Only for dev environment
 dev:
 	npm run dev
 
