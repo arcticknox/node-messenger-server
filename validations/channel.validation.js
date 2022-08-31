@@ -31,10 +31,16 @@ const updateChannel = {
   }),
 };
 
+const list = {
+  body: Joi.object().keys({
+    orgId: Joi.string().required(),
+  }),
+};
+
 module.exports = {
   create,
   getChannel,
   deleteChannel,
-  updateChannel
+  updateChannel,
+  list,
 };
-  

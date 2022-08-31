@@ -11,7 +11,7 @@ const deleteOrg = {
   params: Joi.object().keys({
     orgId: Joi.string().custom(objectId).required(),
   }),
-}
+};
 
 module.exports = {
   create,
