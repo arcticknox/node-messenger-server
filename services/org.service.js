@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const { Org } = require('../models/org.model');
 const ApiError = require('../utils/ApiError');
 const Channel = require('../models/channel.model');
+const config = require('../config/config');
 
 /**
  * 
@@ -15,7 +16,7 @@ const createOrg = async (name, ownerId) => {
     throw new ApiError(httpStatus.CONFLICT, 'This Org already exists');
   }
   const count = await Org.countDocuments({ ownerId });
-  if (count > 5) {
+  if (count > config.maxOrgsAllowed) {
     throw new ApiError(httpStatus.FORBIDDEN, 'User can create maximum of 5 orgs.');
   }
   const org = await Org.create({ name, ownerId, members: [ownerId], admins: [ownerId] });
