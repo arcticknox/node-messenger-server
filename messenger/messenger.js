@@ -35,7 +35,7 @@ const sendMessage = async (payload, io) => {
  * @param {*} socket 
  */
 const initRooms = async (payload, socket) => {
-  const token = _.get(JSON.parse(payload), 'refresh.token');
+  const token = _.get(payload, 'refresh.token');
   const tokenDoc = await verifyToken(token, 'refresh');
   const channels = await ChannelModel.find({ members: _.get(tokenDoc, 'user') });
   if (!channels) return;
